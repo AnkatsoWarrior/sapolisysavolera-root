@@ -14,6 +14,7 @@
  */
 package mg.sapolisysavolera.core.launch;
 
+import mg.sapolisysavolera.core.ui.SpsvFrame;
 import mg.sapolisysavolera.core.ui.WelcomeFrame;
 
 /**
@@ -34,7 +35,10 @@ public final class Launcher {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		new WelcomeFrame().setVisible(true);
+		// new WelcomeFrame().setVisible(true);
+		
+		// just test ...
+		new SpsvFrame("Sa Polisy Sa Volera !").setVisible(true);
 	}
 
 }
