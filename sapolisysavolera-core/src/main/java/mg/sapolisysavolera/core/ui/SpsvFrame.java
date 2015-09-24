@@ -19,6 +19,8 @@ import java.awt.HeadlessException;
 
 import javax.swing.JFrame;
 
+import mg.sapolisysavolera.core.events.SpsvMouseEventListener;
+
 /**
  * Mg : Ity rakitra ity dia ampahany amin'ny tetikasa saPolisySaVolera
  * Fr : Ce fichier fait partie du projet saPolisySaVolera
@@ -37,6 +39,8 @@ public final class SpsvFrame extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = -6403606822072388287L;
+	
+	private SpsvConvas canvas;
 
 	/**
 	 * @param title
@@ -47,7 +51,12 @@ public final class SpsvFrame extends JFrame {
 		setSize(new Dimension(1000, 1000));
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		getContentPane().add(new SpsvConvas());
+		
+		canvas = new SpsvConvas();
+		
+		new SpsvMouseEventListener(canvas);
+		
+		getContentPane().add(canvas);
 		
 	}
 
