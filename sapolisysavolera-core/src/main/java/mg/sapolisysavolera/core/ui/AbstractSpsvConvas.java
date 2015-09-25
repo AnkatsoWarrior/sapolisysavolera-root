@@ -54,6 +54,8 @@ public class AbstractSpsvConvas extends JPanel {
 	protected List<Entity> polices;
 
 	protected Entity thief;
+	
+	protected static final int RADIUS = 400;
 
 	protected static int[] X_RECT = new int[] {
 		
