@@ -24,5 +24,8 @@ Pour toute information ou critique concernant ce petit jeu, n'hesitez pas pour [
 ========
 
 Meilleures salutations,
+
+========
+
 Le développeur
 
