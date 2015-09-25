@@ -16,6 +16,7 @@ package mg.sapolisysavolera.core.ui;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -23,22 +24,31 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
+
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 
 import mg.sapolisysavolera.core.entity.Entity;
+import mg.sapolisysavolera.core.entity.Place;
 import mg.sapolisysavolera.core.entity.Police;
 import mg.sapolisysavolera.core.entity.Thief;
-
 /**
- * Mg : Ity rakitra ity dia ampahany amin'ny tetikasa saPolisySaVolera Fr : Ce
- * fichier fait partie du projet saPolisySaVolera En : This file is part of
- * saPolisySaVolera project <br>
- * Modif. : 18 sept. 2015 Creat. : 24 sept. 2015
+ * 
+ * Mg : Ity rakitra ity dia ampahany amin'ny tetikasa saPolisySaVolera
+ * Fr : Ce fichier fait partie du projet saPolisySaVolera
+ * En : This file is part of saPolisySaVolera project
+ * <br>
+ * Modif. : 25 sept. 2015
+ * Creat. : 25 sept. 2015
  *
  * @author nabil.arrowbase at gmail
  * @since r-1.0
  * @version r-1.0
  */
 public final class SpsvConvas extends AbstractSpsvConvas {
+
+	private boolean movementAuthorized;
 
 	private static final long serialVersionUID = 726103956233099838L;
 
@@ -55,6 +65,7 @@ public final class SpsvConvas extends AbstractSpsvConvas {
 		createPlaces();
 		createPolices();
 		createThief();
+		moveThief();
 	}
 
 	/**
@@ -64,7 +75,69 @@ public final class SpsvConvas extends AbstractSpsvConvas {
 	 * @see #createRectangles(int[], int[])
 	 */
 	private void createPlaces() {
-		places = createRectangles(X_PLACES_RECT, X_PLACES_RECT);
+		Rectangle[] rectangles = createRectangles(X_PLACES_RECT, Y_PLACES_RECT);
+		places = new Place[rectangles.length];
+		for (int i = 0; i < rectangles.length; i++) {
+			Place place = new Place();
+			place.setId(i + 1);
+			place.setRectangle(rectangles[i]);
+			places[i] = place;
+		}
+		createPlacesLinks();
+	}
+
+	/**
+	 * retourne la liste des places a proximite ou une entite se trouvant a la
+	 * place d'identifiant key peut se deplacer
+	 * 
+	 * @param key
+	 *            identifiant de la place de reference
+	 * @return la liste des places ou on peut se deplacer a partir d'une place
+	 *         d'identifiant key
+	 * @see Place
+	 */
+	private List<Place> createNextPlaces(Integer key) {
+		List<Integer> keys = PLACES_MAP.get(key);
+		if (keys == null) {
+			return new ArrayList<Place>();
+		}
+		List<Place> nextPlaces = new ArrayList<Place>();
+		for (Integer currentKey : keys) {
+			Place nextPlace = places[currentKey - 1];
+			nextPlaces.add(nextPlace);
+		}
+		return nextPlaces;
+	}
+
+	/**
+	 * cree les liens entre les differentes places. A partir d'une place, il y a
+	 * seulement un certain nombre de places ou l'on peut se deplacer.
+	 * 
+	 * @see Place
+	 * @see #createNextPlaces(Integer)
+	 */
+	private void createPlacesLinks() {
+		for (Place place : places) {
+			place.addNextPlaces(createNextPlaces(place.getId()));
+		}
+	}
+
+	/**
+	 * retourne toutes les places se trouvant sous la position pos
+	 * 
+	 * @param pos
+	 *            la position sous laquelle on veut recuperer toutes les places
+	 * @return la liste de toutes les places se trouvant sous le point pos
+	 * @see Place
+	 */
+	public List<Place> findPlaces(Point pos) {
+		List<Place> foundPlaces = new ArrayList<Place>();
+		for (Place place : places) {
+			if (place.getRectangle().contains(pos)) {
+				foundPlaces.add(place);
+			}
+		}
+		return foundPlaces;
 	}
 
 	/**
@@ -206,13 +279,28 @@ public final class SpsvConvas extends AbstractSpsvConvas {
 	 * @see Entity
 	 */
 	public Point getPlaceIfExists(Entity entity) {
+
 		Rectangle entityRect = entity.getRectangle();
-		for (Rectangle currentRect : places) {
-			if (currentRect.intersects(entityRect)) {
-				return entity.getPosition();
+		Rectangle placeRect;
+
+		for (Place place : places) {
+			placeRect = place.getRectangle();
+			if (placeRect.intersects(entityRect)) {
+				return getCenter(placeRect);
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * recupere le centre du rectangle
+	 * 
+	 * @param rect
+	 *            le rectangle dont on veut recuperer le centre
+	 * @return le centre du rectangle passe en parametre
+	 */
+	private Point getCenter(Rectangle rect) {
+		return new Point(rect.x + rect.width / 2, rect.y + rect.height / 2);
 	}
 
 	/**
@@ -222,6 +310,7 @@ public final class SpsvConvas extends AbstractSpsvConvas {
 	protected void paintComponent(Graphics g) {
 		Graphics2D drawer = (Graphics2D) g;
 		drawScene(drawer);
+		// drawPlaces(drawer);
 		drawEntities(drawer);
 	}
 
@@ -237,6 +326,19 @@ public final class SpsvConvas extends AbstractSpsvConvas {
 			police.next().draw(drawer);
 		}
 		thief.draw(drawer);
+	}
+
+	private void drawPlaces(Graphics2D drawer) {
+		Color lastColor = drawer.getColor();
+		drawer.setColor(PLACES_DEFAULT_COLOR);
+
+		for (Place place : places) {
+			Rectangle current = place.getRectangle();
+			drawer.drawOval(current.x, current.y, current.width, current.height);
+
+			// drawer.drawString("" + place.getId(), current.x, current.y);
+		}
+		drawer.setColor(lastColor);
 	}
 
 	/**
@@ -255,7 +357,10 @@ public final class SpsvConvas extends AbstractSpsvConvas {
 		drawer.fillRect(0, 0, getWidth(), getHeight());
 		drawer.setStroke(new BasicStroke(2));
 		// dessine la scend du jeu a partir d'ici
+		drawer.setFont(new Font("TimesRoman", Font.PLAIN, 20));
 		drawer.setColor(CANVAS_FOREGROUND);
+		drawer.drawString(message, 100, 50);
+		drawer.drawString("Nombre de mouvements : " + movementsNumber, 500, 50);
 		drawer.drawOval(100, 100, 800, 800);
 		drawer.drawOval(300, 300, 400, 400);
 		drawer.drawOval(400, 400, 200, 200);
@@ -268,6 +373,138 @@ public final class SpsvConvas extends AbstractSpsvConvas {
 		drawer.drawLine(500, 100, 500, 900);
 		// restitue la couleur utilisee par defaut
 		drawer.setColor(lastColor);
+	}
+
+	/**
+	 * deplace le voleur
+	 */
+	public void moveThief() {
+		List<Place> foundPlaces = findPlaces(thief.getPosition());
+		if (!foundPlaces.isEmpty()) {
+			Place lastPlace = foundPlaces.get(0);
+			List<Place> choices = new ArrayList<Place>();
+			for (Place next : lastPlace.getNextPlaces()) {
+				List<Entity> entities = findEntities(getCenter(next
+						.getRectangle()));
+				if (entities.isEmpty()) {
+					choices.add(next);
+				}
+			}
+			if (choices.isEmpty()) {
+				message = "Félicitations !";
+				showPlayAgainConfirmDialog();
+			} else {
+				Place bestPlace = chooseBestPlaceForThief(choices);
+				thief.setPosition(getCenter(bestPlace.getRectangle()));
+				movementAuthorized = true;
+			}
+			invalidate();
+			repaint();
+		}
+	}
+
+	/**
+	 * @param choices
+	 * @return
+	 */
+	private Place chooseBestPlaceForThief(List<Place> choices) {
+		// a implementer une intelligence artificielle pour le choix de la bonne
+		// place
+		// ceci est un heuristique
+		List<Place> securedPlaces = new ArrayList<Place>();
+		for (Place place : choices) {
+			boolean choosen = true;
+			for (Place next : place.getNextPlaces()) {
+				if (!findEntities(getCenter(next.getRectangle())).isEmpty()) {
+					// securedPlaces.add(place);
+					choosen = false;
+					break;
+				}
+			}
+			if (choosen) {
+				securedPlaces.add(place);
+			}
+		}
+		int size;
+		if (!securedPlaces.isEmpty()) {
+			System.out.println("Le voleur a trouve une place securisee");
+			size = securedPlaces.size();
+			if (size != 1) {
+				return securedPlaces.get(getRandomValue(0, size - 1));
+			}
+			return securedPlaces.get(0);
+		}
+		System.out.println("Choix d'une place au hasard");
+		size = choices.size();
+		if (size == 1) {
+			return choices.get(0);
+		}
+		return choices.get(getRandomValue(0, size - 1));
+	}
+
+	/**
+	 * retourne une valeur entiere aleatoire entre min et max
+	 * 
+	 * @param min
+	 * @param max
+	 * @return
+	 */
+	private int getRandomValue(int min, int max) {
+		Random random = new Random();
+		System.out.println("random entre " + min + " et " + max);
+		return random.nextInt(max - min) + min;
+	}
+
+	/**
+	 * initialise le jeu
+	 */
+	public void resetGame() {
+		movementsNumber = 0;
+		message = "Attrappez le !";
+		for (int i = 0; i < 3; i++) {
+			polices.get(i).setPosition(new Point(X_DEFAULT[i], Y_DEFAULT[i]));
+		}
+		thief.setPosition(THIEF_DEFAULT_POSITION);
+		moveThief();
+	}
+
+	/**
+	 * affiche un message demandant a l'utilisateur s'il veut rejouer ou non.
+	 * Dans le cas ou l'utilisateur ne veut pas rejouer, le jeu fera un exit
+	 */
+	public void showPlayAgainConfirmDialog() {
+//		JDialog.setDefaultLookAndFeelDecorated(true);
+		int response = JOptionPane.showConfirmDialog(null,
+				"Félicitations ! voulez-vous rejouer ?",
+				"Rejouer à Sa polisy sa volera", JOptionPane.YES_NO_OPTION,
+				JOptionPane.QUESTION_MESSAGE);
+		if (response == JOptionPane.YES_OPTION) {
+			resetGame();
+		} else {
+			System.exit(0);
+		}
+	}
+
+	/**
+	 * incremente le nombre de mouvements des policiers
+	 */
+	public void incrementsMovementsNumber() {
+		movementsNumber++;
+	}
+
+	/**
+	 * @return the movementAuthorized
+	 */
+	public boolean isMovementAuthorized() {
+		return movementAuthorized;
+	}
+
+	/**
+	 * @param movementAuthorized
+	 *            the movementAuthorized to set
+	 */
+	public void setMovementAuthorized(boolean movementAuthorized) {
+		this.movementAuthorized = movementAuthorized;
 	}
 
 }

@@ -21,28 +21,28 @@ import java.awt.event.MouseMotionListener;
 import java.util.List;
 
 import mg.sapolisysavolera.core.entity.Entity;
+import mg.sapolisysavolera.core.entity.Place;
 import mg.sapolisysavolera.core.ui.SpsvConvas;
 
 /**
- * Mg : Ity rakitra ity dia ampahany amin'ny tetikasa saPolisySaVolera
- * Fr : Ce fichier fait partie du projet saPolisySaVolera
- * En : This file is part of saPolisySaVolera project
- * <br>
- * Modif. : 24 sept. 2015
- * Creat. : 24 sept. 2015
+ * Mg : Ity rakitra ity dia ampahany amin'ny tetikasa saPolisySaVolera Fr : Ce
+ * fichier fait partie du projet saPolisySaVolera En : This file is part of
+ * saPolisySaVolera project <br>
+ * Modif. : 24 sept. 2015 Creat. : 24 sept. 2015
  *
  * @author nabil.arrowbase at gmail
  * @since r-1.0
  * @version r-1.0
  */
-public class SpsvMouseEventListener extends MouseAdapter implements MouseMotionListener {
+public class SpsvMouseEventListener extends MouseAdapter implements
+		MouseMotionListener {
 
 	private SpsvConvas canvas;
-	
+
 	private Entity selectedEntity;
 
 	private Point lastPos;
-	
+
 	/**
 	 * @param canvas
 	 */
@@ -53,45 +53,85 @@ public class SpsvMouseEventListener extends MouseAdapter implements MouseMotionL
 		canvas.addMouseMotionListener(this);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.event.MouseAdapter#mousePressed(java.awt.event.MouseEvent)
 	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
+//		if(!canvas.isMovementAuthorized()) {
+//			//canvas.moveThief();
+//			return;
+//		}
 		List<Entity> foundEntities = canvas.findEntities(e.getPoint());
-		if(!foundEntities.isEmpty()) {
+		if (!foundEntities.isEmpty()) {
 			selectedEntity = foundEntities.get(0);
 			lastPos = (Point) selectedEntity.getPosition().clone();
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.event.MouseAdapter#mouseReleased(java.awt.event.MouseEvent)
 	 */
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		if(selectedEntity != null) {
-			if(canvas.isNotAlone(selectedEntity) && lastPos != null) {
+		if (selectedEntity != null) {
+
+			if (canvas.isNotAlone(selectedEntity) && lastPos != null) {
 				selectedEntity.setPosition(lastPos);
 				canvas.repaint();
+				selectedEntity = null;
+				return;
 			}
+
+			Point possiblePlace = canvas.getPlaceIfExists(selectedEntity);
+			if(null == possiblePlace) {
+				selectedEntity.setPosition(lastPos);
+				canvas.repaint();
+				selectedEntity = null;
+				return;
+			}
+			
+			List<Place> foundPlaces = canvas.findPlaces(lastPos);
+			boolean authrorizeMovement = false;
+			
+			if(!foundPlaces.isEmpty()) {
+				Place lastPlace = foundPlaces.get(0);
+				for(Place next : lastPlace.getNextPlaces()) {
+					if(next.getRectangle().contains(possiblePlace)) {
+						selectedEntity.setPosition(possiblePlace);
+						canvas.setMovementAuthorized(false);
+						canvas.incrementsMovementsNumber();
+						authrorizeMovement = true;
+						canvas.moveThief();
+						break;
+					}
+				}
+			} 
+			
+			if(!authrorizeMovement) {
+				selectedEntity.setPosition(lastPos);
+			}
+			canvas.repaint();
 			selectedEntity = null;
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.event.MouseAdapter#mouseDragged(java.awt.event.MouseEvent)
 	 */
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		if(selectedEntity != null) {
+		if (selectedEntity != null) {
 			selectedEntity.setPosition(e.getPoint());
 			canvas.invalidate();
 			canvas.repaint();
 		}
 	}
-
-	
-	
 
 }
