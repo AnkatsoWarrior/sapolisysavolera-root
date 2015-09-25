@@ -18,6 +18,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.io.Serializable;
 
 /**
@@ -51,6 +52,8 @@ public abstract class Entity implements Movable, Serializable {
 	protected Color background;
 	
 	protected int id;
+	
+	protected  BufferedImage image;
 	
 	private static int idGenerator;
 	

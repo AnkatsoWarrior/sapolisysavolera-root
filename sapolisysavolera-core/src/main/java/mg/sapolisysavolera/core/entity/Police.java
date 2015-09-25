@@ -16,6 +16,10 @@ package mg.sapolisysavolera.core.entity;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 /**
  * Mg : Ity rakitra ity dia ampahany amin'ny tetikasa saPolisySaVolera
  * Fr : Ce fichier fait partie du projet saPolisySaVolera
@@ -31,6 +35,15 @@ import java.awt.Graphics2D;
 public class Police extends Entity {
 
 	private static final long serialVersionUID = -3990878073208631580L;
+	
+	public Police() {
+		super();
+		try {
+			image = ImageIO.read(new File("spsv-pix/police.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -44,8 +57,12 @@ public class Police extends Entity {
 				rectangle.height);
 
 		drawer.setColor(foreground);
-		drawer.drawOval(rectangle.x, rectangle.y, rectangle.width,
-				rectangle.height);
+//		drawer.drawOval(rectangle.x, rectangle.y, rectangle.width,
+//				rectangle.height);
+		
+		if(image != null) {
+			drawer.drawImage(image, rectangle.x, rectangle.y, null);
+		}
 
 		drawer.setColor(lastColor);
 	}

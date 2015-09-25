@@ -16,6 +16,10 @@ package mg.sapolisysavolera.core.entity;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 /**
  * Mg : Ity rakitra ity dia ampahany amin'ny tetikasa saPolisySaVolera
  * Fr : Ce fichier fait partie du projet saPolisySaVolera
@@ -29,6 +33,7 @@ import java.awt.Graphics2D;
  * @version r-1.0
  */
 public class Thief extends Entity {
+	
 	private static final long serialVersionUID = 6215857836744340808L;
 
 	private static final Color THIEF_BACKGROUND_COLOR = Color.RED;
@@ -36,6 +41,11 @@ public class Thief extends Entity {
 	public Thief() {
 		super();
 		background = THIEF_BACKGROUND_COLOR;
+		try {
+			image = ImageIO.read(new File("spsv-pix/thief.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -52,6 +62,10 @@ public class Thief extends Entity {
 		drawer.setColor(foreground);
 		drawer.drawOval(rectangle.x, rectangle.y, rectangle.width,
 				rectangle.height);
+		
+		if(image != null) {
+			drawer.drawImage(image, rectangle.x, rectangle.y, null);
+		}
 
 		drawer.setColor(lastColor);
 
