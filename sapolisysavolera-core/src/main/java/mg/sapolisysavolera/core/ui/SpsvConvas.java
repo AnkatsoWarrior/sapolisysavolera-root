@@ -14,6 +14,7 @@
  */
 package mg.sapolisysavolera.core.ui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -38,8 +39,9 @@ import mg.sapolisysavolera.core.entity.Thief;
  * @since r-1.0
  * @version r-1.0
  */
-@SuppressWarnings("serial")
 public final class SpsvConvas extends AbstractSpsvConvas {
+	
+	private static final long serialVersionUID = 726103956233099838L;
 
 	public SpsvConvas() {
 		super();
@@ -116,10 +118,25 @@ public final class SpsvConvas extends AbstractSpsvConvas {
 		drawer.setColor(CANVAS_BACKGROUND);
 		drawer.fillRect(0, 0, getWidth(), getHeight());
 		
+		
+		drawer.setStroke(new BasicStroke(2));
+		
 		drawer.setColor(CANVAS_FOREGROUND);
 		drawer.drawOval(100, 100, 800, 800);
 		
 		drawer.drawOval(300, 300, 400, 400);
+		
+		drawer.drawOval(400, 400, 200, 200);
+		
+		drawer.drawArc(0, 400, 200, 200, 0, 82);
+		
+		drawer.drawArc(0, 400, 200, 200, 0, -82);
+		
+		drawer.drawArc(800, 400, 200, 200, 98, 164);
+		
+		drawer.drawArc(400, 0, 200, 200, -8, -164);
+		
+		drawer.drawArc(400, 800, 200, 200, 8, 164);
 		
 		drawer.drawLine(100, 500, 900, 500);
 		drawer.drawLine(500, 100, 500, 900);
