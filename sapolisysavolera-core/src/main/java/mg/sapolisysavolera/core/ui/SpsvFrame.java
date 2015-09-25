@@ -51,11 +51,8 @@ public final class SpsvFrame extends JFrame {
 		setSize(new Dimension(1000, 1000));
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
 		canvas = new SpsvConvas();
-		
 		new SpsvMouseEventListener(canvas);
-		
 		getContentPane().add(canvas);
 		
 	}

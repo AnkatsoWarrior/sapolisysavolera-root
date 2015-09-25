@@ -16,6 +16,7 @@ package mg.sapolisysavolera.core.ui;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -33,7 +34,7 @@ import mg.sapolisysavolera.core.entity.Entity;
  * @since r-1.0
  * @version r-1.0
  */
-public class AbstractSpsvConvas extends JPanel {
+public abstract class AbstractSpsvConvas extends JPanel {
 	/**
 	 * 
 	 */
@@ -55,13 +56,13 @@ public class AbstractSpsvConvas extends JPanel {
 
 	protected Entity thief;
 	
-	protected static final int RADIUS = 400;
-
-	protected static int[] X_RECT = new int[] {
-		
+	protected Rectangle[] places;
+	
+	protected static int[] X_PLACES_RECT = new int[] {
+		500
 	};
 
-	protected static int[] Y_RECT = new int[] {
-
+	protected static int[] Y_PLACES_RECT = new int[] {
+		500
 	};
 }

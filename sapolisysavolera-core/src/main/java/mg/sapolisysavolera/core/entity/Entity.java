@@ -36,9 +36,9 @@ public abstract class Entity implements Movable, Serializable {
 	
 	private static final long serialVersionUID = 8397003303413422425L;
 
-	protected static final int DEFAULT_HEIGHT= 50;
+	public static final int DEFAULT_HEIGHT= 50;
 	
-	protected static final int DEFAULT_WIDTH = 50;
+	public static final int DEFAULT_WIDTH = 50;
 	
 	protected static final Color DEFAULT_FOREGROUND_COLOR = Color.GRAY;
 	
