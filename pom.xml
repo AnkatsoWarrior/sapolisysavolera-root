@@ -5,37 +5,23 @@
 	<artifactId>sapolisysavolera-root</artifactId>
 	<version>r-1.0</version>
 	<packaging>pom</packaging>
-  <modules>
-  	<module>sapolisysavolera-core</module>
-  </modules>
-  <description>SaPolisySaVolera root project</description>
-  <properties>
-  		<maven.compiler.plugin>3.0</maven.compiler.plugin>
-  		<java.version>1.6</java.version>
-  		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  		<junit.version>4.9</junit.version>
-  </properties>
-  <build>
-  	<plugins>
-  		<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven.compiler.plugin}</version>
-				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-					<encoding>${project.build.sourceEncoding}</encoding>
-					<compilerArgument>-proc:none</compilerArgument>
-				</configuration>
-			</plugin>
-  	</plugins>
-  </build>
-  <dependencies>
-  		<dependency>
+	<modules>
+		<module>sapolisysavolera-core</module>
+	</modules>
+	<description>SaPolisySaVolera root project</description>
+	<properties>
+		<maven.compiler.plugin>3.0</maven.compiler.plugin>
+		<java.version>1.6</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<junit.version>4.9</junit.version>
+	</properties>
+	
+	<dependencies>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
-  </dependencies>
+	</dependencies>
 </project>

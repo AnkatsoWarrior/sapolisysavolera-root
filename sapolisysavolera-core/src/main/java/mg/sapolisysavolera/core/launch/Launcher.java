@@ -29,7 +29,7 @@ import mg.sapolisysavolera.core.ui.WelcomeFrame;
  * @since r-1.0
  * @version r-1.0
  */
-public final class Launcher {
+public class Launcher {
 
 	/**
 	 * @param args

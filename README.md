@@ -21,6 +21,26 @@ Pour toute information ou critique concernant ce petit jeu, n'hesitez pas pour [
 - Améliorer l'intelligence artificielle du voleur
 - Implémenter la version 2 joeurs et l'intégrer
 
+## Release
+
+Vous pouvez voir les releases dans le repertoire ```sapolisysavolera-root\releases```. Pour lancer spsv :
+
+- Sur Linux : ```sh spsv```
+
+- Sur Windows : ```spsv.bat```
+
+## Build
+
+Pour creer un executable, sur le module ``` sapolisysavolera-core``` la commande suivante :
+
+```
+mvn package appassembler:assemble 
+
+```
+
+Ensuite, copiez le repertoire ```spsv-pix``` dans le repertoire ```bin```  (à côté des scripts de lancement).
+
+
 ========
 
 Meilleures salutations,
