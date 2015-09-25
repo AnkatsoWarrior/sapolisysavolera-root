@@ -26,7 +26,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import mg.sapolisysavolera.core.entity.Entity;
@@ -310,7 +309,7 @@ public final class SpsvConvas extends AbstractSpsvConvas {
 	protected void paintComponent(Graphics g) {
 		Graphics2D drawer = (Graphics2D) g;
 		drawScene(drawer);
-		// drawPlaces(drawer);
+		drawPlaces(drawer);
 		drawEntities(drawer);
 	}
 
@@ -328,15 +327,21 @@ public final class SpsvConvas extends AbstractSpsvConvas {
 		thief.draw(drawer);
 	}
 
+	/**
+	 * permet de dessiner l'ensemble des emplacements possibles des entites 
+	 * 
+	 * @param drawer
+	 * @see Graphics2D
+	 */
 	private void drawPlaces(Graphics2D drawer) {
 		Color lastColor = drawer.getColor();
-		drawer.setColor(PLACES_DEFAULT_COLOR);
-
 		for (Place place : places) {
 			Rectangle current = place.getRectangle();
+			drawer.setColor(PLACES_BACKGROUND_COLOR);
+			drawer.fillOval(current.x, current.y, current.width, current.height);
+			drawer.setColor(PLACES_DEFAULT_COLOR);
 			drawer.drawOval(current.x, current.y, current.width, current.height);
-
-			// drawer.drawString("" + place.getId(), current.x, current.y);
+		   // drawer.drawString("" + place.getId(), current.x, current.y);
 		}
 		drawer.setColor(lastColor);
 	}
@@ -361,6 +366,9 @@ public final class SpsvConvas extends AbstractSpsvConvas {
 		drawer.setColor(CANVAS_FOREGROUND);
 		drawer.drawString(message, 100, 50);
 		drawer.drawString("Nombre de mouvements : " + movementsNumber, 500, 50);
+		drawer.setColor(SCENE_BACKGROUND_COLOR);
+		drawer.fillOval(100, 100, 800, 800);
+		drawer.setColor(/*CANVAS_FOREGROUND*/ PLACES_DEFAULT_COLOR);
 		drawer.drawOval(100, 100, 800, 800);
 		drawer.drawOval(300, 300, 400, 400);
 		drawer.drawOval(400, 400, 200, 200);
@@ -411,7 +419,17 @@ public final class SpsvConvas extends AbstractSpsvConvas {
 		// a implementer une intelligence artificielle pour le choix de la bonne
 		// place
 		// ceci est un heuristique
+		
 		List<Place> securedPlaces = new ArrayList<Place>();
+		// prioriser le centres
+		securedPlaces = findCenterPlaces(choices);
+		if(!securedPlaces.isEmpty()) {
+			int size = securedPlaces.size();
+			if(size == 1) {
+				return securedPlaces.get(0);
+			}
+			return securedPlaces.get(getRandomValue(0, size-1));
+		}
 		for (Place place : choices) {
 			boolean choosen = true;
 			for (Place next : place.getNextPlaces()) {
@@ -440,6 +458,26 @@ public final class SpsvConvas extends AbstractSpsvConvas {
 			return choices.get(0);
 		}
 		return choices.get(getRandomValue(0, size - 1));
+	}
+
+	/**
+	 * retourne une liste de places se trouvant dans les deux cercles centrales
+	 * 
+	 * @param choices une liste de places quelconques 
+	 * @return une liste de places se trouvant dans les deux cercles centrales
+	 * @see Place
+	 */
+	private List<Place> findCenterPlaces(List<Place> choices) {
+		List<Place> centerPlaces = new ArrayList<Place>();
+		for(Place choice : choices) {
+			for(int i=0; i < CENTER_PLACES_ID.length; i++) {
+				if(CENTER_PLACES_ID[i] == choice.getId()) {
+					centerPlaces.add(choice);
+					break;
+				}
+			}
+		}
+		return centerPlaces;
 	}
 
 	/**

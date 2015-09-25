@@ -47,9 +47,13 @@ public abstract class AbstractSpsvConvas extends JPanel {
 
 	protected static final Color CANVAS_FOREGROUND = Color.BLACK;
 
-	protected static final Color CANVAS_BACKGROUND = Color.WHITE;
+	protected static final Color CANVAS_BACKGROUND = Color.WHITE; //new Color(222,243,250);
+	
+	protected static final Color SCENE_BACKGROUND_COLOR = new Color(222,243,250);// new Color(229,250,222);
 
 	protected static final Color PLACES_DEFAULT_COLOR = Color.LIGHT_GRAY;
+	
+	protected static final Color PLACES_BACKGROUND_COLOR = new Color(230,245,250);
 	
 	private static final long serialVersionUID = -4126768433495721928L;
 
@@ -74,6 +78,10 @@ public abstract class AbstractSpsvConvas extends JPanel {
 	protected static final int[] PLACES_ID = new int[] { 1, 2, 3, 4, 5, 6, 7,
 			8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 			25 };
+	
+	protected static final int[] CENTER_PLACES_ID = new int[] {
+			3, 4, 25, 5, 6, 11, 12, 13, 14
+	};
 
 	protected static Map<Integer, List<Integer>> PLACES_MAP = new HashMap<Integer, List<Integer>>();
 	static {
