@@ -68,8 +68,7 @@ public final class SpsvConvas extends AbstractSpsvConvas {
 	}
 
 	/**
-	 * cree des rectangles permettant de reperer si une place peut etre occupee
-	 * par une entite
+	 * cree les emplacements possibles des entites 
 	 * 
 	 * @see #createRectangles(int[], int[])
 	 */
